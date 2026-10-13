@@ -48,14 +48,15 @@ interface ArtModel
   year:number;
 }
 interface MovieModel extends ArtModel{}
-interface BookModel extends MovieModel
+interface BookModel extends ArtModel
 {
   number_of_pages:number;
 }
-interface AlbumModel extends MovieModel
+interface AlbumModel extends ArtModel
 {
   author:string;
   genre:string;
+  songs:Song[];
   
 }
 interface Song
