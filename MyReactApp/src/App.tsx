@@ -41,6 +41,7 @@
 import harry from "./assets/harry_potter_i_komnata.jpg"
 import YN from  "./assets/twoje_imie.jpg"
 import backrooms from "./assets/backroom.jpg"
+import Tadeusz from "./assets/pan_tadeusz.jpg"
 interface ArtModel
 {
   image:string;
@@ -84,9 +85,35 @@ function Book({image,name,year,number_of_pages}:BookModel)
 return(
   <div>
     <BasicArtInfo image={image} name={name} year={year} />
-    <span>{number_of_pages}</span>
+    <h4>{number_of_pages}</h4>
   </div>
-  )}
+  )
+}
+function Songs({ songs }: { songs: Song[] })
+{
+  return(
+    <table>
+      <tr><th>Nazwa</th><th>Długosc</th></tr>
+      {songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}
+    </table>
+  )
+}
+function Song({name,duration}:Song)
+{
+  return(
+    <tr><th>{name}</th><th>{duration}</th></tr>
+  )
+}
+function Album({image,name,year,author,genre,songs}:AlbumModel) {
+  return(
+    <div>
+      <BasicArtInfo image={image} name={name} year={year} />
+      <h4>{author}</h4>
+      <p>{genre}</p>
+      <Songs songs={songs}></Songs>
+    </div>
+  )
+}
 
 
 export function App()
@@ -96,6 +123,7 @@ export function App()
     <Movie image={harry} name="Harry Potter i Komnata Tajemnic" year={2002}></Movie>
     <Movie image={YN} name="Twoje imię" year={2017}/>
     <Movie image={backrooms} name="Backrooms. Bez wyjścia" year={2026} />
+    <Book image={Tadeusz} name="Pan Tadeusz, czyli ostatni zajazd na litwie" year={1834} number_of_pages={212}></Book>
   </>)
   }
 export default App
