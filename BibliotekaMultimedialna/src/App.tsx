@@ -1,43 +1,3 @@
-// interface Greeted
-// {
-//   /** Imię do powitania */
-//    name:string;
-//    /**opcjonalne Wiek osoby */
-//    age?:number;
-//    /** opcjonalnie customowe powitanie */
-//    greeting ?:string;
-//    gentle ?:boolean;
-// }
-
-// function Greeter({name,age=18,greeting,gentle}:Greeted) {
-
-//   if(greeting==null)
-//   {
-//   if( age <30)
-//   {
-//     greeting="Witaj"
-//   }
-//   else
-//   {
-//     greeting="Dzień dobry"
-//   }
-// }
-//   return (
-//     <p>{greeting} {name}{gentle ? ".":"!" }</p>
-//   )
-// }
-
-// export function App()
-// {
-//   return (
-//     <>
-//     <Greeter name="Mario" age={30} />
-//     <Greeter name="strict" age={20}/>
-//     <Greeter name="abs" age={40} greeting="Proszę podać się do dymisji"/>
-//     </>
-//   )
-// }
-
 import harry from "./assets/harry_potter_i_komnata.jpg"
 import twoje_imie from  "./assets/twoje_imie.jpg"
 import backrooms from "./assets/backroom.jpg"
@@ -49,25 +9,35 @@ import transistor from "./assets/transistor.jpg"
 import malo_miasteczkowy from "./assets/małomiasteczkowy.jpeg"
 interface ArtModel
 {
+
+  /**Obraz przedstawiający utwór */
   image:string;
+  /**nazwa utworu */
   name:string;
+  /**Data powstania utworu */
   year:number;
 }
 interface MovieModel extends ArtModel{}
 interface BookModel extends ArtModel
 {
+  /** Ilość stron książki */
   number_of_pages:number;
 }
 interface AlbumModel extends ArtModel
 {
+  /**Autor Albumu */
   author:string;
+  /**Gatunek Albumu */
   genre:string;
+  /**Lista piosenek */
   songs:Song[];
   
 }
 interface Song
 {
+  /**Nazwa piosenki */
   name:string;
+  /**Długość trwania */
   duration:string;
 }
 function BasicArtInfo({image,name,year}:ArtModel)
