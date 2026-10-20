@@ -17,7 +17,9 @@ interface ArtModel
   /**Data powstania utworu */
   year:number;
 }
-interface MovieModel extends ArtModel{}
+interface MovieModel extends ArtModel{
+  rating:Number;
+}
 interface BookModel extends ArtModel
 {
   /** Ilość stron książki */
@@ -40,12 +42,16 @@ interface Song
   /**Długość trwania */
   duration:string;
 }
+function art_model_compare(a:ArtModel,b:ArtModel)
+{
+  return a.name.localeCompare(b.name);
+}
 
 var movies:MovieModel[]=
 [
-  {image:harry, name:"Harry Potter i Komnata Tajemnic", year:2002},
-  {image:twoje_imie, name:"Twoje imię", year:2017},
-  {image:backrooms, name:"Backrooms. Bez wyjścia", year:2026}
+  {image:harry, name:"Harry Potter i Komnata Tajemnic", year:2002, rating:5},
+  {image:twoje_imie, name:"Twoje imię", year:2017,rating:8.8},
+  {image:backrooms, name:"Backrooms. Bez wyjścia", year:2026,rating:10}
 ]
 var books:BookModel[]=
 [
@@ -105,6 +111,9 @@ var albums:AlbumModel[]=
   { name: "She Shines", duration: "4:06" }]}
 ]
 
+movies.sort(art_model_compare);
+books.sort(art_model_compare);
+albums.sort(art_model_compare);
 
 
 
@@ -118,9 +127,12 @@ function BasicArtInfo({image,name,year}:ArtModel)
       </div>
     )
 }
-function Movie({image,name,year}:MovieModel){
+function Movie({image,name,year,rating}:MovieModel){
   return(
+    <div>
     <BasicArtInfo image={image} name={name} year={year} />
+    <h4>{rating.toString()}</h4>
+    </div>
   )}
 
 function Book({image,name,year,number_of_pages}:BookModel)
@@ -157,7 +169,8 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
     </div>
   )
 }
-
+ var max:number=0
+    albums.forEach((album)=>{if(max<album.songs.length){max=album.songs.length}})
 
 export function App()
 {
@@ -167,19 +180,32 @@ export function App()
   <h2>Filmy</h2>
   <hr />
   </div>
-  {movies.map((movie)=>{return(<Movie image={movie.image} name={movie.name} year={movie.year} />)})}
+  {movies.map((movie)=>{return(<Movie{...movie} />)})}
   <div>
-  <h2>Filmy</h2>
+  <h2>Filmy po 2010</h2>
   <hr />
   </div>
-  {books.map((book)=>{return(<Book image={book.image} name={book.name} year={book.year} number_of_pages={book.number_of_pages} />)})}
-    <div>
-  <h2>Filmy</h2>
+  {movies.filter((movie)=>movie.year>2010).map((movie)=>{return(<Movie {...movie} />)})}
+  <div>
+  <h2>Książki</h2>
   <hr />
   </div>
-  {albums.map((album)=>{return(<Album image={album.image} name={album.name} year={album.year} genre={album.genre} author={album.author} songs={album.songs} />)})}  
-
-  </>)
+  {books.map((book)=>{return(<Book {...book} />)})}
+  <div>
+  <h2>Filmy po 2010</h2>
+  <hr />
+  </div>
+  {books.sort((book,book2)=>book2.year-book.year).map((book)=>{return(<Book {...book} />)})}
+  <div>
+  <h2>Albumy</h2>
+  <hr />
+  </div>
+  {albums.map((album)=>{return(<Album {...album}/>)})}  
+<div>
+  <h2>Album o największej ilości tworów</h2>
+  <hr />
+  </div>
+  </>)//do zrobienia album o największej ilości elementów
   
   }
 export default App
