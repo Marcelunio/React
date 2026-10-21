@@ -7,6 +7,7 @@ import matematyka from "./assets/matematyka.webp"
 import man_bites_dog from "./assets/MBD.jpeg"
 import transistor from "./assets/transistor.jpg"
 import malo_miasteczkowy from "./assets/małomiasteczkowy.jpeg"
+import { useState } from "react"
 interface ArtModel
 {
 
@@ -41,6 +42,10 @@ interface Song
   name:string;
   /**Długość trwania */
   duration:string;
+}
+interface SectionModel extends React.PropsWithChildren
+{
+  title:string;
 }
 function art_model_compare(a:ArtModel,b:ArtModel)
 {
@@ -181,38 +186,44 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
  var max:number=0
     albums.forEach((album)=>{if(max<album.songs.length){max=album.songs.length}})
 
+function Section({title,children}:SectionModel)
+{
+    function openClose()
+    {
+        setIsOpen(!isOpen)
+    }
+    const [isOpen,setIsOpen]=useState(true);
+    return(<div>
+          <h2  onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2>
+          <hr />
+          {isOpen ? (<div>{children}</div>) :(<></>)}
+          </div>)
+}
+let booksYear=[...books];
 export function App()
 {
   return(
   <>
   <div>
-  <h2>Filmy</h2>
-  <hr />
-  </div>
+  <Section title="Filmy">
   {movies.map((movie)=>{return(<Movie{...movie} />)})}
-  <div>
-  <h2>Filmy po 2010</h2>
-  <hr />
-  </div>
+  </Section>
+  <Section title="Filmy po 2010">
   {movies.filter((movie)=>movie.year>2010).map((movie)=>{return(<Movie {...movie} />)})}
-  <div>
-  <h2>Książki</h2>
-  <hr />
-  </div>
+  </Section>
+  <Section title="ksiażki">
   {books.map((book)=>{return(<Book {...book} />)})}
-  <div>
-  <h2>Filmy po 2010</h2>
-  <hr />
-  </div>
-  {books.sort((book,book2)=>book2.year-book.year).map((book)=>{return(<Book {...book} />)})}
-  <div>
-  <h2>Albumy</h2>
-  <hr />
-  </div>
+  </Section>
+  <Section title="ksiażki Rocznikowo">
+  {booksYear.sort((book,book2)=>book2.year-book.year).map((book)=>{return(<Book {...book} />)})}
+  </Section>
+  <Section title="Albumy">
   {albums.map((album)=>{return(<Album {...album}/>)})}  
-<div>
-  <h2>Album o największej ilości tworów</h2>
-  <hr />
+  </Section>
+  <Section title="Album o największej ilości tworów">
+
+
+  </Section>
   </div>
   </>)//do zrobienia album o największej ilości elementów
   
