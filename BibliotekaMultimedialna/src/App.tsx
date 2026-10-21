@@ -18,7 +18,7 @@ interface ArtModel
   year:number;
 }
 interface MovieModel extends ArtModel{
-  rating:Number;
+  rating:number;
 }
 interface BookModel extends ArtModel
 {
@@ -120,11 +120,11 @@ albums.sort(art_model_compare);
 function BasicArtInfo({image,name,year}:ArtModel)
 {
     return (
-      <div>
+      <>
         <img src={image} alt={name}/>
         <h3>{name}</h3>
         <span>{year}</span>
-      </div>
+      </>
     )
 }
 function Movie({image,name,year,rating}:MovieModel){
@@ -132,6 +132,7 @@ function Movie({image,name,year,rating}:MovieModel){
     <div>
     <BasicArtInfo image={image} name={name} year={year} />
     <h4>{rating.toString()}</h4>
+    <h5>{rating>8 ? "Polecany" : ""}</h5>
     </div>
   )}
 
@@ -141,17 +142,25 @@ return(
   <div>
     <BasicArtInfo image={image} name={name} year={year} />
     <h4>{number_of_pages}</h4>
+    <h5>{year<2000 ? "Klasyka" : ""}</h5>
   </div>
   )
 }
 function Songs({ songs }: { songs: Song[] })
 {
+  if(songs!=null)
+  {
   return(
     <table>
       <tr><th>Nazwa</th><th>Długosc</th></tr>
       {songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}
     </table>
   )
+  }
+  else
+  {
+    return(<span>Brak utworów</span>)
+  }
 }
 function Song({name,duration}:Song)
 {
