@@ -7,7 +7,7 @@ import matematyka from "./assets/matematyka.webp"
 import man_bites_dog from "./assets/MBD.jpeg"
 import transistor from "./assets/transistor.jpg"
 import malo_miasteczkowy from "./assets/małomiasteczkowy.jpeg"
-import { useState } from "react"
+import { Children, useState, type PropsWithChildren } from "react"
 interface ArtModel
 {
 
@@ -18,6 +18,8 @@ interface ArtModel
   /**Data powstania utworu */
   year:number;
 }
+interface ArtModelChildren extends ArtModel,PropsWithChildren
+{}
 interface MovieModel extends ArtModel{
   rating:number;
 }
@@ -122,33 +124,38 @@ albums.sort(art_model_compare);
 
 
 
-function BasicArtInfo({image,name,year}:ArtModel)
+function ArtInfo({image,name,year,children}:ArtModelChildren)
 {
     return (
-      <>
-        <img src={image} alt={name}/>
-        <h3>{name}</h3>
-        <span>{year}</span>
-      </>
+      <div className="card w-20 col">
+        <img src={image} alt={name} className="card-img-top"/>
+        <div className="card-body">
+          <h3 className="card-title">{name}</h3>
+          <span className="card-subtitle fw-lighter">{year}</span> 
+          {children}
+        </div>
+      </div>
     )
 }
 function Movie({image,name,year,rating}:MovieModel){
   return(
-    <div>
-    <BasicArtInfo image={image} name={name} year={year} />
-    <h4>{rating.toString()}</h4>
-    <h5>{rating>8 ? "Polecany" : ""}</h5>
-    </div>
+    <ArtInfo image={image} name={name} year={year}>
+    <ul className="list-group list-group-flush">
+    <li  className="list-group-item">{rating.toString()}</li>
+    {rating>8 ? (<li className="list-group-item">Polecany</li>) :(<></>)}
+    </ul>
+    </ArtInfo>
   )}
 
 function Book({image,name,year,number_of_pages}:BookModel)
 {
 return(
-  <div>
-    <BasicArtInfo image={image} name={name} year={year} />
-    <h4>{number_of_pages}</h4>
-    <h5>{year<2000 ? "Klasyka" : ""}</h5>
-  </div>
+    <ArtInfo image={image} name={name} year={year}>
+    <ul className="list-group list-group-flush">
+    <li  className="list-group-item"> {number_of_pages}</li>
+    {year<2000 ? (<li className="list-group-item">Klasyka</li>) :(<></>)}
+    </ul>
+  </ArtInfo>
   )
 }
 function Songs({ songs }: { songs: Song[] })
@@ -156,9 +163,9 @@ function Songs({ songs }: { songs: Song[] })
   if(songs!=null)
   {
   return(
-    <table>
-      <tr><th>Nazwa</th><th>Długosc</th></tr>
-      {songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}
+    <table className="table table-striped w-90">
+      <thead><tr ><th>Nazwa</th><th>Długosc</th></tr></thead>
+      <tbody>{songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}</tbody>
     </table>
   )
   }
@@ -170,17 +177,18 @@ function Songs({ songs }: { songs: Song[] })
 function Song({name,duration}:Song)
 {
   return(
-    <tr><th>{name}</th><th>{duration}</th></tr>
+    <tr><td>{name}</td><td className="text-end">{duration}</td></tr>
   )
 }
 function Album({image,name,year,author,genre,songs}:AlbumModel) {
   return(
-    <div>
-      <BasicArtInfo image={image} name={name} year={year} />
-      <h4>{author}</h4>
-      <p>{genre}</p>
-      <Songs songs={songs}></Songs>
-    </div>
+      <ArtInfo image={image} name={name} year={year}>
+        <ul className="list-group list-group-flush">
+        <li  className="list-group-item"> {author}</li>
+        <li  className="list-group-item"> {genre}</li>
+        <li  className="list-group-item"><Songs songs={songs} /></li>
+        </ul>
+      </ArtInfo>
   )
 }
  var max:number=0
@@ -196,14 +204,14 @@ function Section({title,children}:SectionModel)
     return(<div>
           <h2  onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2>
           <hr />
-          {isOpen ? (<div>{children}</div>) :(<></>)}
+          {isOpen ? (<div className="row">{children}</div>) :(<></>)}
           </div>)
 }
 let booksYear=[...books];
 export function App()
 {
   return(
-  <>
+  <main className="container">
   <div>
   <Section title="Filmy">
   {movies.map((movie)=>{return(<Movie{...movie} />)})}
@@ -225,7 +233,7 @@ export function App()
 
   </Section>
   </div>
-  </>)//do zrobienia album o największej ilości elementów
+  </main>)//do zrobienia album o największej ilości elementów
   
   }
 export default App
