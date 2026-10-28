@@ -147,6 +147,7 @@ function Movie({image,name,year,rating}:MovieModel){
     <ul className="list-group list-group-flush">
     <li  className="list-group-item">{rating.toString()}</li>
     {rating>8 ? (<li className="list-group-item">Polecany</li>) :(<></>)}
+    <li className="list-group-item"><button className="btn btn-light" onClick={(()=>console.log(`Wybrano film: ${name}`))}>pokaż szczegóły dla {name}</button></li>
     </ul>
     </ArtInfo>
   )}
@@ -169,7 +170,7 @@ function Songs({ songs }: { songs: Song[] })
   return(
     <table className="table table-striped w-90 table-hover">
       <thead><tr ><th>Nazwa</th><th>Długosc</th></tr></thead>
-      <tbody>{songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}</tbody>
+      <tbody>{songs.map((song,index) =>{return(<Song key={index} name={song.name} duration={song.duration}></Song>)})}</tbody>
     </table>
   )
   }
@@ -186,6 +187,7 @@ function Song({name,duration}:Song)
 }
 function Album({image,name,year,author,genre,songs}:AlbumModel) {
   return(
+    <div>
       <ArtInfo image={image} name={name} year={year}>
         <ul className="list-group list-group-flush">
         <li  className="list-group-item"> {author}</li>
@@ -193,6 +195,7 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
         <li  className="list-group-item"><Songs songs={songs} /></li>
         </ul>
       </ArtInfo>
+      </div>
   )
 }
  var max:number=0
@@ -208,7 +211,7 @@ function Section({title,children}:SectionModel)
     return(<div>
           <h2   onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2>
           <hr />
-          {isOpen ? (<div className="row  row-cols-3">{children}</div>) :(<></>)}
+          {isOpen ? (<div className="row  row-cols-2">{children}</div>) :(<></>)}
           </div>)
 }
 let booksYear=[...books];
@@ -216,26 +219,24 @@ export function App()
 {
   return(
   <main className="container">
-  <div>
-  <Section title="Filmy">
-  {movies.map((movie)=>{return(<Movie{...movie} />)})}
+  <Section key={1} title="Filmy">
+  {movies.map((movie,index)=>{return(<Movie  key={index} {...movie} />)})}
   </Section>
-  <Section title="Filmy po 2010">
-  {movies.filter((movie)=>movie.year>2010).map((movie)=>{return(<Movie {...movie} />)})}
+  <Section key={2} title="Filmy po 2010">
+  {movies.filter((movie)=>movie.year>2010).map((movie,index)=>{return(<Movie key={index} {...movie} />)})}
   </Section>
-  <Section title="ksiażki">
+  <Section key={3} title="ksiażki">
   {books.map((book)=>{return(<Book {...book} />)})}
   </Section>
-  <Section title="ksiażki Rocznikowo">
-  {booksYear.sort((book,book2)=>book2.year-book.year).map((book)=>{return(<Book {...book} />)})}
+  <Section key={4} title="ksiażki Rocznikowo">
+  {booksYear.sort((book,book2)=>book2.year-book.year).map((book,index)=>{return(<Book  key={index} {...book} />)})}
   </Section>
-  <Section title="Albumy">
-  {albums.map((album)=>{return(<Album {...album}/>)})}  
+  <Section key={5} title="Albumy">
+  {albums.map((album,index)=>{return(<Album  key={index} {...album}/>)})}  
   </Section>
-  <Section title="Album o największej ilości tworów">
+  <Section key={6} title="Album o największej ilości tworów">
     <Album {...longestalbum} />
   </Section>
-  </div>
   </main>)
   
   }
