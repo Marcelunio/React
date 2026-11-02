@@ -45,9 +45,11 @@ interface Song
   /**Długość trwania */
   duration:string;
 }
-interface SectionModel extends React.PropsWithChildren
+interface SectionModel
 {
   title:string;
+  contents:ArtModel[];
+  display_element:any;
 }
 function art_model_compare(a:ArtModel,b:ArtModel)
 {
@@ -198,7 +200,7 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
  var max:number=0
     albums.forEach((album)=>{if(max<album.songs.length){max=album.songs.length}})
 
-function Section({title,children}:SectionModel)
+function Section({title,contents,display_element}:SectionModel)
 {
     let [search_phrase,setSearchPhrase]=useState("");
     function handleOnChange(event: React.ChangeEvent<HTMLInputElement>)
@@ -214,7 +216,7 @@ function Section({title,children}:SectionModel)
     return(<div>
           <h2   onClick={openClose}>{title}-filtr {search_phrase} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2><input onChange={handleOnChange} type="text" className="form-control" placeholder="wyszukaj"/>
           <hr />
-          {isOpen ? (<div className="row  row-cols-3">{children}</div>) :(<></>)}
+          {isOpen ? (<div className="row  row-cols-3">{contents.filter((element)=>element.name.includes(search_phrase)|| search_phrase=="").map((element)=>{console.log(element); return(<>{display_element({...element})}</>)})}</div>) :(<></>)}
           </div>)
 }
 let booksYear=[...books];
@@ -223,24 +225,12 @@ export function App()
   return(
   <main className="container">
   <div>
-  <Section title="Filmy">
-  {movies.map((movie)=>{return(<Movie{...movie} />)})}
-  </Section>
-  <Section title="Filmy po 2010">
-  {movies.filter((movie)=>movie.year>2010).map((movie)=>{return(<Movie {...movie} />)})}
-  </Section>
-  <Section title="ksiażki">
-  {books.map((book)=>{return(<Book {...book} />)})}
-  </Section>
-  <Section title="ksiażki Rocznikowo">
-  {booksYear.sort((book,book2)=>book2.year-book.year).map((book)=>{return(<Book {...book} />)})}
-  </Section>
-  <Section title="Albumy">
-  {albums.map((album)=>{return(<Album {...album}/>)})}  
-  </Section>
-  <Section title="Album o największej ilości tworów">
-    <Album {...longestalbum} />
-  </Section>
+  <Section title="Filmy" contents={movies} display_element={Movie} />
+  <Section title="Filmy po 2010" contents={movies.filter((movie)=>movie.year>2010)} display_element={Movie} />
+  <Section title="ksiażki" contents={books} display_element={Book} />
+  <Section title="ksiażki Rocznikowo" contents={booksYear.sort((book,book2)=>book2.year-book.year)} display_element={Book} />
+  <Section title="Albumy" contents={albums} display_element={Album} />
+  <Section title="Album o największej ilości tworów" contents={[longestalbum]} display_element={Album} />
   </div>
   </main>)
   
