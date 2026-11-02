@@ -181,8 +181,16 @@ function Songs({ songs }: { songs: Song[] })
 }
 function Song({name,duration}:Song)
 {
+  function handleSongClick()
+  {
+    console.log(`name: ${name}`,`duration: ${duration}`)
+  }
+  //arrow function vs function keyword function
+  //Skrócony zapis
+  //nie wiążą this i super, dziedziczą z zakresu w którym są
+
   return(
-    <tr><td>{name}</td><td className="text-end">{duration}</td></tr>
+    <tr onClick={handleSongClick}><td>{name}</td><td className="text-end">{duration}</td></tr>
   )
 }
 function Album({image,name,year,author,genre,songs}:AlbumModel) {
@@ -209,8 +217,7 @@ function Section({title,children}:SectionModel)
     }
     const [isOpen,setIsOpen]=useState(true);
     return(<div>
-          <h2   onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2>
-          <hr />
+          <h2   onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2> 
           {isOpen ? (<div className="row  row-cols-2">{children}</div>) :(<></>)}
           </div>)
 }
