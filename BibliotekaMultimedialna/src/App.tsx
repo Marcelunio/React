@@ -149,6 +149,7 @@ function Movie({image,name,year,rating}:MovieModel){
     <ul className="list-group list-group-flush">
     <li  className="list-group-item">{rating.toString()}</li>
     {rating>8 ? (<li className="list-group-item">Polecany</li>) :(<></>)}
+    <li className="list-group-item"><button className="btn btn-light" onClick={(()=>console.log(`Wybrano film: ${name}`))}>pokaż szczegóły dla {name}</button></li>
     </ul>
     </ArtInfo>
   )}
@@ -171,7 +172,7 @@ function Songs({ songs }: { songs: Song[] })
   return(
     <table className="table table-striped w-90 table-hover">
       <thead><tr ><th>Nazwa</th><th>Długosc</th></tr></thead>
-      <tbody>{songs.map((song) =>{return(<Song name={song.name} duration={song.duration}></Song>)})}</tbody>
+      <tbody>{songs.map((song,index) =>{return(<Song key={index} name={song.name} duration={song.duration}></Song>)})}</tbody>
     </table>
   )
   }
@@ -182,12 +183,21 @@ function Songs({ songs }: { songs: Song[] })
 }
 function Song({name,duration}:Song)
 {
+  function handleSongClick()
+  {
+    console.log(`name: ${name}`,`duration: ${duration}`)
+  }
+  //arrow function vs function keyword function
+  //Skrócony zapis
+  //nie wiążą this i super, dziedziczą z zakresu w którym są
+
   return(
-    <tr><td>{name}</td><td className="text-end">{duration}</td></tr>
+    <tr onClick={handleSongClick}><td>{name}</td><td className="text-end">{duration}</td></tr>
   )
 }
 function Album({image,name,year,author,genre,songs}:AlbumModel) {
   return(
+    <div>
       <ArtInfo image={image} name={name} year={year}>
         <ul className="list-group list-group-flush">
         <li  className="list-group-item"> {author}</li>
@@ -195,6 +205,7 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
         <li  className="list-group-item"><Songs songs={songs} /></li>
         </ul>
       </ArtInfo>
+      </div>
   )
 }
  var max:number=0
