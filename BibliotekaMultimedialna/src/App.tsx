@@ -200,13 +200,19 @@ function Album({image,name,year,author,genre,songs}:AlbumModel) {
 
 function Section({title,children}:SectionModel)
 {
+    let [search_phrase,setSearchPhrase]=useState("");
+    function handleOnChange(event: React.ChangeEvent<HTMLInputElement>)
+    {
+      console.log(event.target.value);
+      setSearchPhrase(event.target.value)
+    }
     function openClose()
     {
         setIsOpen(!isOpen)
     }
     const [isOpen,setIsOpen]=useState(true);
     return(<div>
-          <h2   onClick={openClose}>{title} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2>
+          <h2   onClick={openClose}>{title}-filtr {search_phrase} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2><input onChange={handleOnChange} type="text" className="form-control" placeholder="wyszukaj"/>
           <hr />
           {isOpen ? (<div className="row  row-cols-3">{children}</div>) :(<></>)}
           </div>)
