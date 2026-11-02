@@ -19,7 +19,10 @@ interface ArtModel
   year:number;
 }
 interface ArtModelChildren extends ArtModel,PropsWithChildren
-{}
+{
+  onClick?:(e:React.MouseEvent<HTMLDivElement>)=>(void)
+}
+
 interface MovieModel extends ArtModel{
   rating:number;
 }
@@ -53,8 +56,11 @@ interface SongModel extends Song
 }
 interface SectionModel
 {
+  /**Tytuł sekcji */
   title:string;
+  /**Zawartość danej sekcji pochodna ArtModel */
   contents:ArtModel[];
+  /** funkcja odpowiedzialna za obsługę danych typu danej pochodnej ArtModel */
   display_element:any;
 }
 function art_model_compare(a:ArtModel,b:ArtModel)
@@ -132,14 +138,14 @@ movies.sort(art_model_compare);
 books.sort(art_model_compare);
 albums.sort(art_model_compare);
 
-var longestalbum:AlbumModel=albums[1];
+var longestalbum:AlbumModel=albums[0];
 albums.forEach((album)=>{if(longestalbum.songs.length<album.songs.length){longestalbum=album}})
 
 
-function ArtInfo({image,name,year,children}:ArtModelChildren)
+function ArtInfo({image,name,year,children,onClick}:ArtModelChildren)
 {
     return (
-      <div className="card col ">
+      <div className="card col " onClick={onClick}>
         <img src={image} alt={name} className="card-img-top "/>
         <div className="card-body">
           <h3 className="card-title">{name}</h3>
@@ -150,12 +156,16 @@ function ArtInfo({image,name,year,children}:ArtModelChildren)
     )
 }
 function Movie({image,name,year,rating}:MovieModel){
+  function handleMovieClick(e: React.MouseEvent<HTMLDivElement>)
+  {
+    console.log(`Wybrano film: ${name}`)
+  }
   return(
-    <ArtInfo image={image} name={name} year={year}>
+    <ArtInfo onClick={handleMovieClick} image={image} name={name} year={year}>
     <ul className="list-group list-group-flush">
     <li  className="list-group-item">{rating.toString()}</li>
     {rating>8 ? (<li className="list-group-item">Polecany</li>) :(<></>)}
-    <li className="list-group-item"><button className="btn btn-light" onClick={(()=>console.log(`Wybrano film: ${name}`))}>pokaż szczegóły dla {name}</button></li>
+    <li className="list-group-item"><button className="btn btn-light" onClick={((e)=>{e.stopPropagation();return console.log(`Pokaż szczegóły dla: ${name}`)})}>pokaż szczegóły dla {name}</button></li>
     </ul>
     </ArtInfo>
   )}
@@ -227,9 +237,10 @@ function Section({title,contents,display_element}:SectionModel)
     }
     function openClose()
     {
-        setIsOpen(!isOpen)
+        setIsOpen(!isOpen) 
     }
     const [isOpen,setIsOpen]=useState(true);
+    /** zawartość contents przefiltrowana przez search_phrase */ 
     let filtered =contents.filter((element)=>element.name.includes(search_phrase)|| search_phrase=="")
     return(<div>
           <h2   onClick={openClose}>{title}{(search_phrase!="") ? (<>-filtr </>):(<></>)}{search_phrase} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2><input onChange={handleOnChange} type="text" className="form-control" placeholder="wyszukaj"/>
