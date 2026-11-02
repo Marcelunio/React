@@ -213,10 +213,17 @@ function Section({title,contents,display_element}:SectionModel)
         setIsOpen(!isOpen)
     }
     const [isOpen,setIsOpen]=useState(true);
+    let filtered =contents.filter((element)=>element.name.includes(search_phrase)|| search_phrase=="")
     return(<div>
           <h2   onClick={openClose}>{title}-filtr {search_phrase} {(isOpen) ? (<>⏷</>):(<>⏵</>)}</h2><input onChange={handleOnChange} type="text" className="form-control" placeholder="wyszukaj"/>
           <hr />
-          {isOpen ? (<div className="row  row-cols-3">{contents.filter((element)=>element.name.includes(search_phrase)|| search_phrase=="").map((element)=>{console.log(element); return(<>{display_element({...element})}</>)})}</div>) :(<></>)}
+          {isOpen ?
+           (<div className="row  row-cols-3">
+            {(filtered.length>0) ? 
+            filtered.map((element)=>{return(<>{display_element({...element})}</>)})
+            :
+            (<div className="alert alert-danger" role="alert">Brak filmów</div>)}</div>)
+          :(<></>)}
           </div>)
 }
 let booksYear=[...books];
