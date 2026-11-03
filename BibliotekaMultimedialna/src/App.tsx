@@ -3,51 +3,57 @@ interface task
 {
  initial_title:string
   finished:boolean;
+  index:number;
 }
-interface taskProps extends task
+interface taskProps
 {
+   initial_title:string
+  finished:boolean;
   onClick?:React.MouseEventHandler | undefined;
 }
 
 
 
 
-const initial_tasks:taskProps[]=[{initial_title:"Test",finished:false}]
+const initial_tasks:task[]=[{initial_title:"Test",finished:false,index:0},{initial_title:"Test2",finished:false,index:1}]
 function TaskManager()
 {
-  const [Tasks,setTasks]=useState<taskProps[]>(initial_tasks);
-  // const [filter,setFilter]=useState("all");
-  // const [sort,setSort]=useState("alphabet")
+  const [Tasks,setTasks]=useState<task[]>(initial_tasks);
+  const [filter,setFilter]=useState("all");
+  const [sort,setSort]=useState("alphabet")
   let mTasks=[...Tasks]
-  // let filteredTasks=[...Tasks]
+  let [filteredTasks,setFilteredTasks]=useState([...Tasks])
   function handleTaskClick(index:number)
   {
     mTasks[index].finished=!mTasks[index].finished;
     setTasks(mTasks);
   }
-  // function handleFilterClick()
-  // {
-  //   if(filter=="all")
-  //   {
-  //     setFilter("done")
-      
-  //   }
-  //   else if(filter=="done")
-  //   {
-  //     setFilter("undone")
-  //   }
-  //   else 
-  //   {
-  //     setFilter("all")
-  //   }
-  // }
+  function handleFilterClick()
+  {
+    if(filter=="all")
+    {
+      setFilter("done")
+      setFilteredTasks(Tasks.filter((task:task)=>{return task.finished}))    
+    }
+    else if(filter=="done")
+    {
+      setFilter("to be done")
+      setFilteredTasks(Tasks.filter((task:task)=>{return !task.finished}))
+    }
+    else 
+    {
+      setFilter("all")
+      setFilteredTasks(Tasks.filter((task:task)=>{return true}))
+    }
+  }
   // function handleSortClick()
   // {
-
+      
   // }
   return(
     <>
-    {Tasks.map((task:taskProps,index)=>{return(<Task onClick={()=>handleTaskClick(index)} key={index} initial_title={task.initial_title} finished={task.finished}/>)})}
+    <button onClick={handleFilterClick}>{filter}</button>
+    {filteredTasks.map((task:task,index)=>{return(<Task onClick={()=>handleTaskClick(task.index)} key={task.index} initial_title={task.initial_title} finished={task.finished}/>)})}
     <p>Ilość niewykonanych: {(Tasks.filter((task)=>{return !task.finished})).length}</p>
   </>
   )
