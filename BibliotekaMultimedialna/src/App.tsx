@@ -1,26 +1,68 @@
+import { use, useState } from "react";
+interface task
+{
+ initial_title:string
+  finished:boolean;
+}
+interface taskProps extends task
+{
+  onClick?:React.MouseEventHandler | undefined;
+}
 
-import {  useState, type PropsWithChildren } from "react"
-import * as data from "./Models/Data"
-import type { AlbumModel } from "./Models/AlbumModel";
-import { Album } from "./Components/AlbumComponent";
-import { Book } from "./Components/BookComponent";
-import { Movie } from "./Components/MovieComponent";
-import { Section } from "./Components/SectionComponent";
-var longestalbum:AlbumModel=data.albums[0];
-data.albums.forEach((album)=>{if(longestalbum.songs.length<album.songs.length){longestalbum=album}})
-export function App()
+
+
+
+const initial_tasks:taskProps[]=[{initial_title:"Test",finished:false}]
+function TaskManager()
+{
+  const [Tasks,setTasks]=useState<taskProps[]>(initial_tasks);
+  // const [filter,setFilter]=useState("all");
+  // const [sort,setSort]=useState("alphabet")
+  let mTasks=[...Tasks]
+  // let filteredTasks=[...Tasks]
+  function handleTaskClick(index:number)
+  {
+    mTasks[index].finished=!mTasks[index].finished;
+    setTasks(mTasks);
+  }
+  // function handleFilterClick()
+  // {
+  //   if(filter=="all")
+  //   {
+  //     setFilter("done")
+      
+  //   }
+  //   else if(filter=="done")
+  //   {
+  //     setFilter("undone")
+  //   }
+  //   else 
+  //   {
+  //     setFilter("all")
+  //   }
+  // }
+  // function handleSortClick()
+  // {
+
+  // }
+  return(
+    <>
+    {Tasks.map((task:taskProps,index)=>{return(<Task onClick={()=>handleTaskClick(index)} key={index} initial_title={task.initial_title} finished={task.finished}/>)})}
+    <p>Ilość niewykonanych: {(Tasks.filter((task)=>{return !task.finished})).length}</p>
+  </>
+  )
+}
+
+function Task({initial_title,finished,onClick}:taskProps)
 {
   return(
-  <main className="container">
-  <div>
-  <Section title="Filmy" contents={data.movies} display_element={Movie} />
-  <Section title="Filmy po 2010" contents={data.movies.filter((movie)=>movie.year>2010)} display_element={Movie} />
-  <Section title="ksiażki" contents={data.books} display_element={Book} />
-  <Section title="ksiażki Rocznikowo" contents={data.books.toSorted((book,book2)=>book2.year-book.year)} display_element={Book} />
-  <Section title="Albumy" contents={data.albums} display_element={Album} />
-  <Section title="Album o największej ilości tworów" contents={[longestalbum]} display_element={Album} />
-  </div>
-  </main>)
+    <div onClick={onClick}>{initial_title} {finished ?"wykonano":"do zrobienia"} </div>
+  )
+}
+
+export function App()
+{
+  return(<div><TaskManager /></div>)
   
   }
 export default App
